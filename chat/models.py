@@ -20,3 +20,14 @@ class UserActivity(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.method} {self.path}@ {self.created_at}"
+    
+class BaseModel(models.Model):
+    is_active = models.BooleanField(default=True)
+    is_delete = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Blog(BaseModel):
+    author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    

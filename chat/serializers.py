@@ -44,4 +44,21 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
+
+class BlogSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+    class Meta:
+        model = Blog
+        fields = ['title', 'content', 'author']
+        # extra_kwargs = {
+        #     'author': {'read_only': True}
+        # }
+
+    def create(self, validated_data):
+        return Blog.objects.create(**validated_data)
+        
+
+
+
+
     

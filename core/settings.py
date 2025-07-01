@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import environ, os, dj_database_url
+from datetime import timedelta
 
 env = environ.Env()
 
@@ -29,7 +30,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1:8000","render-deployment-5826.onrender.com"]
+ALLOWED_HOSTS = ["127.0.0.1","127.0.0.1:8000","render-deployment-5826.onrender.com"]
 
 
 # Application definition
@@ -87,7 +88,7 @@ DATABASES = {
     'default': env.db()
 }
 
-DATABASES["default"] = dj_database_url.parse("postgresql://render_tutorial_nhno_user:kSdNgHF32UsmhrLyk2fqYzZ0ax7YJUce@dpg-d1hnjb7fte5s73ag8egg-a.singapore-postgres.render.com/render_tutorial_nhno")
+# DATABASES["default"] = dj_database_url.parse("postgresql://render_tutorial_nhno_user:kSdNgHF32UsmhrLyk2fqYzZ0ax7YJUce@dpg-d1hnjb7fte5s73ag8egg-a.singapore-postgres.render.com/render_tutorial_nhno")
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -120,6 +121,17 @@ REST_FRAMEWORK = {
     )
 }
 
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # ⏰ Set access token expiry to 60 minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # 🔁 Refresh token valid for 7 days
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,  # or use a custom secret key
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

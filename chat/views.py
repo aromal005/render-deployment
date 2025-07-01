@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -70,5 +71,28 @@ class CustomTokenRefreshView(TokenRefreshView):
                 return Response({"status":"error","response_code":status.HTTP_401_UNAUTHORIZED,"message":"Refresh token is blacklisted. Try another refreshtoken"})
             access_token = super().post(request,*args,**kwargs)
             return Response({"status":"success","response_code":status.HTTP_200_OK,"access_token": access_token.data['access']})
+        except Exception as e:
+            return Response({"status":"error","response_code":status.HTTP_400_BAD_REQUEST,"message":str(e)})
+        
+class CreateBlogView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BlogSerializer
+    queryset = Blog.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(author=request.user)
+                return Response({"status":"success","response_code":status.HTTP_200_OK,"message":"Blog created successfully"})
+            else:
+                return Response({"status":"error","response_code":status.HTTP_400_BAD_REQUEST,"message":serializer.errors})
+        except Exception as e:
+            return Response({"status":"error","response_code":status.HTTP_400_BAD_REQUEST,"message":str(e)})
+        
+    def get(self,request,*args,**kwargs):
+        try:
+            response = super().get(request,*args,**kwargs)
+            return Response({"status":"success","response_code":status.HTTP_200_OK,"data":response.data})
         except Exception as e:
             return Response({"status":"error","response_code":status.HTTP_400_BAD_REQUEST,"message":str(e)})
