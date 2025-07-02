@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -150,6 +151,17 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': "JWT Authorization header using Bearer. Example: 'Bearer <your_token>'"
+        }
+    },
+}
 
 # Optional (for production optimization):
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
